@@ -249,4 +249,4 @@ Here is a sample output of `tfplan.json`:
 }
 ```
 
-> :note: The api token in the above example is invalid and is shown as an example only.
+> **Note** The api token in the above example is invalid and is shown as an example only.
