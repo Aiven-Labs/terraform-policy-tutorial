@@ -6,19 +6,19 @@ In this tutorial, you will learn how to use [Open Policy Agent (OPA)](https://ww
 
 Rapu started at Crab Inc. as Junior DevOps Engineer. He is shadowing a senior engineer on the team to learn how the team deploys PostgreSQL, Redis, Kafka, and other data-related services across development and production environments. 
 
-The development team is based in Montreal, Canada and they should only create cloud resources on Google Cloud Montreal region. However, to ensure high availability for the company's North American customers, the production environment supports multiple AWS cloud regions in the US East location. 
+The development team is based in Montreal, Canada and they should only create cloud resources on Google Cloud Montreal region. However, to ensure high availability for the company's North American customers, the production environment supports multiple AWS cloud regions in the US East location. Previously, there was no guardrails in place and Rapu deployed to cloud regions where he wasn't supposed to deploy. 
 
 Your goal is to help Rapu enforce these policies so that resources don't get created in the wrong cloud or region.
 
 ## Prerequisites
 
-[Aiven](https://aiven.io/) provides highly-available and scalable data infrastructure based on open-source technologies. For this tutorial, you'll create a [free Aiven account](https://console.aiven.io/signup) and take advantage of [Aiven Terraform Provider](https://registry.terraform.io/providers/aiven/aiven/latest).
+The concept of the tutorial is agnostic of what Terraform provider you choose. For the sake of a demo, I'll choose [Aiven Terraform Provider](https://registry.terraform.io/providers/aiven/aiven/latest). [Aiven](https://aiven.io/) provides highly-available and scalable data infrastructure based on open-source technologies. For this tutorial, you'll create a [free Aiven account](https://console.aiven.io/signup) and [an Aiven authentication token](https://docs.aiven.io/docs/platform/howto/create_authentication_token).
 
 Install [OPA](https://www.openpolicyagent.org/docs/latest/#running-opa) and [Terraform](https://developer.hashicorp.com/terraform/downloads).
 
 ## Step 1: Write the Terraform files
 
-In this section, you'll create a Terraform file that contains an Aiven for Redis resource. This can be any cloud resource for your use case and Aiven for Redis is used as an example. Besides the Aiven for Redis resource in the `services.tf` file, you'll create a `provider.tf` file for the provider and version details. You'll also create a `variables.tf` to define the required variables for Aiven Terraform Provider.
+In this section, you'll help Rapu create Terraform files that contains an Aiven for Redis resource. This can be any cloud resource for your use case and Aiven for Redis is used as an example. Besides the Aiven for Redis resource in the `services.tf` file, create a `provider.tf` file for the provider and version details. You'll also create a `variables.tf` to define the required variables for Aiven Terraform Provider.
 
 In an empty directory, create these three files:
 
@@ -29,7 +29,7 @@ terraform {
   required_providers {
     aiven = {
       source  = "aiven/aiven"
-      version = "~> 4.0.0"
+      version = "~> 4.1.0"
     }
   }
 }
@@ -56,10 +56,10 @@ variable "project_name" {
 `service.tf` file:
 
 ```terraform
-resource "aiven_redis" "dewan-redis-terraform" {
+resource "aiven_redis" "redis-demo" {
 project = "devrel-dewan" # Find your Aiven project name from top-left of Aiven console
 plan = "hobbyist" # For this exercise, the hobbyist plan will do
-service_name = "dewan-redis-demo" # Choose any service name
+service_name = "redis-demo" # Choose any service name
 cloud_name = "google-northamerica-northeast1" # Choose any cloud region from https://docs.aiven.io/docs/platform/reference/list_of_clouds
 }
 ```
@@ -100,10 +100,10 @@ Here is a sample output of `tfplan.json`:
         "root_module": {
             "resources": [
                 {
-                    "address": "aiven_redis.dewan-redis-terraform",
+                    "address": "aiven_redis.redis-demo",
                     "mode": "managed",
                     "type": "aiven_redis",
-                    "name": "dewan-redis-terraform",
+                    "name": "redis-demo",
                     "provider_name": "registry.terraform.io/aiven/aiven",
                     "schema_version": 0,
                     "values": {
@@ -137,10 +137,10 @@ Here is a sample output of `tfplan.json`:
     },
     "resource_changes": [
         {
-            "address": "aiven_redis.dewan-redis-terraform",
+            "address": "aiven_redis.redis-demo",
             "mode": "managed",
             "type": "aiven_redis",
-            "name": "dewan-redis-terraform",
+            "name": "redis-demo",
             "provider_name": "registry.terraform.io/aiven/aiven",
             "change": {
                 "actions": [
@@ -201,7 +201,7 @@ Here is a sample output of `tfplan.json`:
             "aiven": {
                 "name": "aiven",
                 "full_name": "registry.terraform.io/aiven/aiven",
-                "version_constraint": "~> 4.0.0",
+                "version_constraint": "~> 4.1.0",
                 "expressions": {
                     "api_token": {
                         "references": [
@@ -214,10 +214,10 @@ Here is a sample output of `tfplan.json`:
         "root_module": {
             "resources": [
                 {
-                    "address": "aiven_redis.dewan-redis-terraform",
+                    "address": "aiven_redis.redis-demo",
                     "mode": "managed",
                     "type": "aiven_redis",
-                    "name": "dewan-redis-terraform",
+                    "name": "redis-demo",
                     "provider_config_key": "aiven",
                     "expressions": {
                         "cloud_name": {
@@ -250,3 +250,73 @@ Here is a sample output of `tfplan.json`:
 ```
 
 > **Note** The api token in the above example is invalid and is shown as an example only.
+
+## Step 4: Write the OPA policy to check the plan
+
+OPA policies are written in [Rego](https://www.openpolicyagent.org/docs/latest/policy-language/). The following Rego checks if Rapu can deploy to a development environment or a production environment based on the type of Terraform resource and the cloud region they choose. 
+
+In the same folder, create a sub-folder called **policy** and create a file within called **terraform.rego**. Add the following code to that file:
+
+```
+package terraform.analysis
+
+import input as tfplan
+import future.keywords
+
+dev_env_required_cloud := "google-northamerica-northeast1"
+
+prod_env_cloud_prefix := "aws-us-east"
+
+resource_types := {"aiven_kafka", "aiven_pg", "aiven_opensearch", "aiven_redis"}
+
+default allow_dev_deployment := false
+
+default allow_prod_deployment := false
+
+allow_dev_deployment if {
+	some resource in tfplan.planned_values.root_module.resources
+	resource.type in resource_types
+	resource.values.cloud_name == dev_env_required_cloud
+}
+
+allow_prod_deployment if {
+	some resource in tfplan.planned_values.root_module.resources
+	resource.type in resource_types
+	startswith(resource.values.cloud_name, prod_env_cloud_prefix)
+}
+```
+
+Let's analyze this file. Crab Inc. uses PostgreSQL for their relational database, Redis for caching, OpenSearch for search and analytics, and Kafka as the central message bus. Therefore, `resource_types` field limits the use of these four resources only. Crab Inc. allows developers to deploy only in the Montreal, Canada region and `dev_env_required_cloud` field takes care of that requirement. Similarly, production deployments are allowed at any one of Aiven's supported AWS cloud regions in the USA East coast which `prod_env_cloud_prefix` field takes care of.
+
+Execute the following command from the main directory to find out if OPA would allow the Terraform deployment to go through:
+
+```
+./opa exec --decision terraform/analysis/allow_prod_deployment --bundle policy/ tfplan.json
+```
+
+With the current Terraform service definition, the output of the above command will be:
+
+```shell
+{
+  "result": [
+    {
+      "path": "tfplan.json",
+      "result": true
+    }
+  ]
+}
+```
+
+If you have [jq](https://stedolan.github.io/jq) installed on your machine, you can find the exact result with:
+
+```
+./opa exec --decision terraform/analysis/allow_prod_deployment --bundle policy/ tfplan.json | jq '.result[0].result'
+```
+
+The `opa exac` command is taking in the `tfplan.json` as an input and validating this against the policy we defined in the **allow_prod_deployment** section under policy/terraform.rego file. **terraform/analysis** is denoting the package name in that Rego. 
+
+Let's make a change in the `services.tf` file and change the `cloud_name` field to `aws-us-west-1`. Now if you repeat steps 2, 3, and 4, the output from the `opa exec` command should be `false`.
+
+## Step 5: Testing the OPA policy
+
+TODO
