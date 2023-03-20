@@ -117,7 +117,7 @@ Here is a sample output of `tfplan.json`:
                         "project_vpc_id": null,
                         "redis_user_config": [],
                         "service_integrations": [],
-                        "service_name": "dewan-redis-demo",
+                        "service_name": "redis-demo",
                         "service_type": "redis",
                         "static_ips": null,
                         "tag": [],
@@ -158,7 +158,7 @@ Here is a sample output of `tfplan.json`:
                     "project_vpc_id": null,
                     "redis_user_config": [],
                     "service_integrations": [],
-                    "service_name": "dewan-redis-demo",
+                    "service_name": "redis-demo",
                     "service_type": "redis",
                     "static_ips": null,
                     "tag": [],
@@ -230,7 +230,7 @@ Here is a sample output of `tfplan.json`:
                             "constant_value": "devrel-dewan"
                         },
                         "service_name": {
-                            "constant_value": "dewan-redis-demo"
+                            "constant_value": "redis-demo"
                         }
                     },
                     "schema_version": 0
