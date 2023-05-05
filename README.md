@@ -57,10 +57,10 @@ variable "project_name" {
 
 ```terraform
 resource "aiven_redis" "redis-demo" {
-project = "devrel-dewan" # Find your Aiven project name from top-left of Aiven console
-plan = "hobbyist" # For this exercise, the hobbyist plan will do
-service_name = "redis-demo" # Choose any service name
-cloud_name = "google-northamerica-northeast1" # Choose any cloud region from https://docs.aiven.io/docs/platform/reference/list_of_clouds
+    project = "devrel-dewan" # Find your Aiven project name from top-left of Aiven console
+    plan = "hobbyist" # For this exercise, the hobbyist plan will do
+    service_name = "redis-demo" # Choose any service name
+    cloud_name = "google-northamerica-northeast1" # Choose any cloud region from https://docs.aiven.io/docs/platform/reference/list_of_clouds
 }
 ```
 
@@ -79,6 +79,12 @@ Use the command terraform show to convert the Terraform plan into JSON so that O
 
 ```shell
 terraform show -json tfplan.binary > tfplan.json
+```
+
+For improved readability you can pipe the output through jq before saving the file.
+
+```shell
+terraform show -json tfplan.binary | jq > tfplan.json
 ```
 
 Here is a sample output of `tfplan.json`:
@@ -263,7 +269,7 @@ package terraform.analysis
 import input as tfplan
 import future.keywords
 
-dev_env_required_cloud := "google-northamerica-northeast1"
+dev_env_cloud_prefix := "google-northamerica-northeast1"
 
 prod_env_cloud_prefix := "aws-us-east"
 
@@ -276,7 +282,7 @@ default allow_prod_deployment := false
 allow_dev_deployment if {
 	some resource in tfplan.planned_values.root_module.resources
 	resource.type in resource_types
-	resource.values.cloud_name == dev_env_required_cloud
+	resource.values.cloud_name == dev_env_cloud_prefix
 }
 
 allow_prod_deployment if {
@@ -286,7 +292,7 @@ allow_prod_deployment if {
 }
 ```
 
-Let's analyze this file. Crab Inc. uses PostgreSQL for their relational database, Redis for caching, OpenSearch for search and analytics, and Kafka as the central message bus. Therefore, `resource_types` field limits the use of these four resources only. Crab Inc. allows developers to deploy only in the Montreal, Canada region and `dev_env_required_cloud` field takes care of that requirement. Similarly, production deployments are allowed at any one of Aiven's supported AWS cloud regions in the USA East coast which `prod_env_cloud_prefix` field takes care of.
+Let's analyze this file. Crab Inc. uses PostgreSQL for their relational database, Redis for caching, OpenSearch for search and analytics, and Kafka as the central message bus. Therefore, `resource_types` field limits the use of these four resources only. Crab Inc. allows developers to deploy only in the Montreal, Canada region and `dev_env_cloud_prefix` field takes care of that requirement. Similarly, production deployments are allowed at any one of Aiven's supported AWS cloud regions in the USA East coast which `prod_env_cloud_prefix` field takes care of.
 
 Execute the following command from the main directory to find out if OPA would allow the Terraform deployment to go through:
 
@@ -315,8 +321,182 @@ If you have [jq](https://stedolan.github.io/jq) installed on your machine, you c
 
 The `opa exac` command is taking in the `tfplan.json` as an input and validating this against the policy we defined in the **allow_prod_deployment** section under policy/terraform.rego file. **terraform/analysis** is denoting the package name in that Rego. 
 
-Let's make a change in the `services.tf` file and change the `cloud_name` field to `aws-us-west-1`. Now if you repeat steps 2, 3, and 4, the output from the `opa exec` command should be `false`.
+Let's make a change in the `services.tf` file and change the `cloud_name` field to `google-northamerica-northeast1`. Now if you repeat steps 2, 3, and 4, the output from the `opa exec` command should be `false`.
 
-## Step 5: Testing the OPA policy
+hint:
 
-TODO
+```bash
+terraform plan --out tfplan.binary
+terraform show -json tfplan.binary | jq > tfplan.json
+opa exec --decision terraform/analysis/allow_prod_deployment --bundle ./policy tfplan.json
+```
+
+## Step 5 using the data block
+
+Rapu has done a great job implimenting his first policy. However, typically data won't be hard coded in the policy. So let's rewrite the current policy and create some news ones.
+
+Create the following data.json file in the `policy` folder this should be right next to our rego file: 
+
+```json
+{
+  "team": "devrel",
+  "app": "crab_cage",
+  "dev": {
+    "cloud": "google-northamerica-northeast1"
+  },
+  "prod": {
+    "cloud": "aws-us-east"
+  }
+}
+```
+
+Now that we have a data file, we can go back and update our Rego policy.
+
+terraform.rego
+
+```rego
+package terraform.analysis
+
+import input as tfplan
+import future.keywords
+
+# notice we removed the hard coded variables
+
+resource_types := {"aiven_kafka", "aiven_pg", "aiven_opensearch", "aiven_redis"}
+
+default allow_dev_deployment := false
+
+default allow_prod_deployment := false
+
+allow_dev_deployment if {
+	some resource in tfplan.planned_values.root_module.resources
+	resource.type in resource_types
+	resource.values.cloud_name == data.dev.cloud # referencing the new data block
+}
+
+allow_prod_deployment if {
+	some resource in tfplan.planned_values.root_module.resources
+	resource.type in resource_types
+	startswith(resource.values.cloud_name, data.prod.cloud)  # referencing the new data block
+}
+```
+
+Now we can rerun the policy check. Remember we added the data file to our policy folder so OPA should be aware of the new data.
+
+```bash
+terraform plan --out tfplan.binary
+terraform show -json tfplan.binary | jq > tfplan.json
+opa exec --decision terraform/analysis/allow_prod_deployment --bundle ./policy tfplan.json
+```
+
+
+## Challenge: Add some rules on your own
+
+Now that you have 1 policy in place, cany you expand this policy to include a few more rules? You can try the following or make up a rule of your own.
+
+1. project must start with team name
+2. service_name must include app name
+
+## Step 6: Testing the OPA policy
+
+Now that we have a few policies in place, we are going to add unit tests to ensure our policies are good before we enforce them in production.
+
+Create a rego file for our tests. 
+
+test_terraform.rego
+
+```rego
+package terraform.test_analysis
+
+import terraform.analysis
+
+test_allow_dev_deployment if {
+
+allow_dev_deployment with input as { "planned_values": {
+    "root_module": {
+      "resources": [
+        {
+          "address": "aiven_redis.redis-demo",
+          "mode": "managed",
+          "type": "aiven_redis",
+          "name": "redis-demo",
+          "provider_name": "registry.terraform.io/aiven/aiven",
+          "schema_version": 1,
+          "values": {
+            "cloud_name": "aws-us-east",
+            "plan": "hobbyist",
+            "project": "devrel-dewan",
+            "service_name": "redis-demo",
+            "service_type": "redis",
+          }
+        }
+      ]
+    }
+  }
+}
+
+}
+
+test_not_allow_prod_deployment if {
+
+not allow_prod_deployment with input as { "planned_values": {
+    "root_module": {
+      "resources": [
+        {
+          "address": "aiven_redis.redis-demo",
+          "mode": "managed",
+          "type": "aiven_redis",
+          "name": "redis-demo",
+          "provider_name": "registry.terraform.io/aiven/aiven",
+          "schema_version": 1,
+          "values": {
+            "cloud_name": "aws-us-east",
+            "plan": "hobbyist",
+            "project": "devrel-dewan",
+            "service_name": "redis-demo",
+            "service_type": "redis",
+          }
+        }
+      ]
+    }
+  }
+}
+
+}
+
+Bonus points for writing this with the DRY (Don't Repeat Yourself) coding practices.
+
+```
+
+## Challenge add unit tests for the additional policy rules you created
+
+test_project_name {
+    # insert code here
+}
+
+test_service_name {
+    # insert code here
+}
+
+
+## Wrap up and conclusion
+
+Let's look at all the things Rapu has accomplished on his first project at Crab, Inc.
+
+- Created Aiven terraform file
+- Convert terraform plan into binary 
+- Convert binary output into json 
+- Created a Rego policy to verify the resource configuration
+- Tested our Rego policy on our local CLI
+- Cleaned up our Rego policy by moving hard coded data to a data file
+- Wrote addition policies to very more specifics of the resources
+- Added unit tests for each of our policies
+
+This is the of end of our workshop, thanks for spending the time learning with us today. Here are some additional resources to help you learn about the tools in this workshop. 
+
+[Learn Rego](https://academy.styra.com/)
+[OPA Docs](https://www.openpolicyagent.org/docs/latest/)
+[Terraform Docs](https://developer.hashicorp.com/terraform/docs)
+[Aiven docs](https://docs.aiven.io/)
+
+
