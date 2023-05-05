@@ -408,65 +408,46 @@ test_terraform.rego
 ```rego
 package terraform.test_analysis
 
-import terraform.analysis
+import data.terraform.analysis
 
-test_allow_dev_deployment if {
-
-allow_dev_deployment with input as { "planned_values": {
-    "root_module": {
-      "resources": [
-        {
-          "address": "aiven_redis.redis-demo",
-          "mode": "managed",
-          "type": "aiven_redis",
-          "name": "redis-demo",
-          "provider_name": "registry.terraform.io/aiven/aiven",
-          "schema_version": 1,
-          "values": {
-            "cloud_name": "aws-us-east",
-            "plan": "hobbyist",
-            "project": "devrel-dewan",
-            "service_name": "redis-demo",
-            "service_type": "redis",
-          }
-        }
-      ]
-    }
-  }
+test_allow_dev_deployment {
+	allow_dev_deployment with input as {"planned_values": {"root_module": {"resources": [{
+		"address": "aiven_redis.redis-demo",
+		"mode": "managed",
+		"type": "aiven_redis",
+		"name": "redis-demo",
+		"provider_name": "registry.terraform.io/aiven/aiven",
+		"schema_version": 1,
+		"values": {
+			"cloud_name": "aws-us-east",
+			"plan": "hobbyist",
+			"project": "devrel-dewan",
+			"service_name": "redis-demo",
+			"service_type": "redis",
+		},
+	}]}}}
 }
 
+test_not_allow_prod_deployment {
+	not allow_prod_deployment with input as {"planned_values": {"root_module": {"resources": [{
+		"address": "aiven_redis.redis-demo",
+		"mode": "managed",
+		"type": "aiven_redis",
+		"name": "redis-demo",
+		"provider_name": "registry.terraform.io/aiven/aiven",
+		"schema_version": 1,
+		"values": {
+			"cloud_name": "aws-us-east",
+			"plan": "hobbyist",
+			"project": "devrel-dewan",
+			"service_name": "redis-demo",
+			"service_type": "redis",
+		},
+	}]}}}
 }
-
-test_not_allow_prod_deployment if {
-
-not allow_prod_deployment with input as { "planned_values": {
-    "root_module": {
-      "resources": [
-        {
-          "address": "aiven_redis.redis-demo",
-          "mode": "managed",
-          "type": "aiven_redis",
-          "name": "redis-demo",
-          "provider_name": "registry.terraform.io/aiven/aiven",
-          "schema_version": 1,
-          "values": {
-            "cloud_name": "aws-us-east",
-            "plan": "hobbyist",
-            "project": "devrel-dewan",
-            "service_name": "redis-demo",
-            "service_type": "redis",
-          }
-        }
-      ]
-    }
-  }
-}
-
-}
-
-Bonus points for writing this with the DRY (Don't Repeat Yourself) coding practices.
 
 ```
+Bonus points for writing this with the DRY (Don't Repeat Yourself) coding practices.
 
 ## Challenge add unit tests for the additional policy rules you created
 
