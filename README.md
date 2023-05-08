@@ -20,12 +20,20 @@ Install [OPA](https://www.openpolicyagent.org/docs/latest/#running-opa) and [Ter
 
 In this section, you'll help Rapu create Terraform files that contains an Aiven for Redis resource. This can be any cloud resource for your use case and Aiven for Redis is used as an example. Besides the Aiven for Redis resource in the `services.tf` file, create a `provider.tf` file for the provider and version details. You'll also create a `variables.tf` to define the required variables for Aiven Terraform Provider.
 
-1. [Write the Terraform files](/section_1.md)
-2. [Create and save a Terraform plan](/section_2.md)
-3. [Convert the Terraform plan into JSON](/section_3.md)
-4. [Write the OPA policy to check the plan](/section_4.md)
-5. [using the data block](/section_5.md)
-6. [Testing the OPA policy](/section_6.md)
+Our protagonist Rapu will learn as a junior engineer how to decouple and enforce policies using some common tools. When decoupling policies using Open Policy Agent, the structure is pretty consistent no matter the tool or service.
+
+There is a tool/service, in this case we will be using Terraform.
+This tool will generate some data that will be used as Input for our decision
+The input file will be sent to OPA to be compared against the Policy(written in Rego) and any additional Data
+As an added bonus Rapu will learn how to write Unit tests for his policies, which is part of clean code and best practicies.
+
+![Policy Decision](policy-decision.jpg)
+
+1. [Setup Terraform files](/section_1.md)
+2. [Create the input for our Policy](/section_2.md)
+4. [Write our policy in Rego](/section_3.md)
+5. [Add data to our policy](/section_4.md)
+6. [Unit testing for our policies](/section_5.md)
 
 ## Wrap up and conclusion
 
