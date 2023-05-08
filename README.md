@@ -22,9 +22,8 @@ In this section, you'll help Rapu create Terraform files that contains an Aiven 
 
 Our protagonist Rapu will learn as a junior engineer how to decouple and enforce policies using some common tools. When decoupling policies using Open Policy Agent, the structure is pretty consistent no matter the tool or service.
 
-There is a tool/service, in this case we will be using Terraform.
-This tool will generate some data that will be used as Input for our decision
-The input file will be sent to OPA to be compared against the Policy(written in Rego) and any additional Data
+There is a **tool/service**, in this case we will be using Terraform. This tool will generate some data that will be used as **Input** for our decision. The input file will be sent to OPA to be compared against the **Policy**(written in Rego) and any additional **Data**.
+
 As an added bonus Rapu will learn how to write Unit tests for his policies, which is part of clean code and best practicies.
 
 ![Policy Decision](policy-decision.jpg)
