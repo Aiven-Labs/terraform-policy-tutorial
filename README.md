@@ -50,8 +50,16 @@ Let's look at all the things Rapu has accomplished on his first project at Crab,
 
 This is the of end of our workshop, thanks for spending the time learning with us today. Here are some additional resources to help you learn about the tools in this workshop. 
 
-[Learn Rego](https://academy.styra.com/)
-[Test Rego](https://play.openpolicyagent.org/)
-[OPA Docs](https://www.openpolicyagent.org/docs/latest/)
-[Terraform Docs](https://developer.hashicorp.com/terraform/docs)
-[Aiven docs](https://docs.aiven.io/)
+| Link  | Description   |
+|---|---|
+| [Styra Academy](https://academy.styra.com/)  | The styra academy is full of video course to get hands on with Rego and OPA |
+| [Rego Playground](https://play.openpolicyagent.org/)  | The Rego playground is available to interactively test your rego policies  |
+| [OPA Docs](https://www.openpolicyagent.org/docs/latest/) | The OPA docs are extensively written to answer any questions you may have  |
+| [Aiven Docs](https://docs.aiven.io/)  | The Aiven docs will help you get unblocked using any Aiven resources |
+| [Terraform Docs](https://developer.hashicorp.com/terraform/docs)  | The Terraform docs are a great reference to get started with Terraform  |
+
+
+
+
+
+
