@@ -55,5 +55,3 @@ This is the of end of our workshop, thanks for spending the time learning with u
 [OPA Docs](https://www.openpolicyagent.org/docs/latest/)
 [Terraform Docs](https://developer.hashicorp.com/terraform/docs)
 [Aiven docs](https://docs.aiven.io/)
-
-
