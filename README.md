@@ -29,9 +29,9 @@ As an added bonus Rapu will learn how to write Unit tests for his policies, whic
 ![Policy Decision](policy-decision.jpg)
 
 1. [Setup Terraform files](/section_1.md)
-2. [Create the input for our Policy](/section_2.md)
-4. [Write our policy in Rego](/section_3.md)
-5. [Add data to our policy](/section_4.md)
+2. [Create the **Input** for our policy](/section_2.md)
+4. [Write our **Policy** in Rego](/section_3.md)
+5. [Add **Data** to our policy](/section_4.md)
 6. [Unit testing for our policies](/section_5.md)
 
 ## Wrap up and conclusion
