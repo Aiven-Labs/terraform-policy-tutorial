@@ -34,11 +34,13 @@ Here's a detailed version of the same system:
 
 ![Detailed view](Terraform_OPA%20Workshop_Detailed.png)
 
-1. [Setup Terraform files](/01_terraform_deployment_without_OPA.md)
-2. [Create the **Input** for our policy](/02_prep_tf_plan_OPA.md)
-4. [Write our **Policy** in Rego](/03_write_policy_in_rego.md)
-5. [Add **Data** to our policy](/04_create_data_block_rego.md)
-6. [Unit testing for our policies](/05_unit_testing_rego.md)
+## Workshop modules
+
+1. [Setup Terraform files](/modules/01_terraform_deployment_without_OPA.md)
+2. [Create the **Input** for our policy](/modules/02_prep_tf_plan_OPA.md)
+4. [Write our **Policy** in Rego](/modules/03_write_policy_in_rego.md)
+5. [Add **Data** to our policy](/modules/04_create_data_block_rego.md)
+6. [Unit testing for our policies](/modules/05_unit_testing_rego.md)
 
 ## Wrap up and conclusion
 
