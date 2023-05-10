@@ -26,13 +26,19 @@ There is a **tool/service**, in this case we will be using Terraform. This tool 
 
 As an added bonus Rapu will learn how to write Unit tests for his policies, which is part of clean code and best practicies.
 
-![Policy Decision](policy-decision.jpg)
+Here's a high-level overview of the system:
 
-1. [Setup Terraform files](/section_1.md)
-2. [Create the **Input** for our policy](/section_2.md)
-4. [Write our **Policy** in Rego](/section_3.md)
-5. [Add **Data** to our policy](/section_4.md)
-6. [Unit testing for our policies](/section_5.md)
+![High-level overview](./Terraform_OPA%20Workshop_Overview.png)
+
+Here's a detailed version of the same system:
+
+![Detailed view](Terraform_OPA%20Workshop_Detailed.png)
+
+1. [Setup Terraform files](/01_terraform_deployment_without_OPA.md)
+2. [Create the **Input** for our policy](/02_prep_tf_plan_OPA.md)
+4. [Write our **Policy** in Rego](/03_write_policy_in_rego.md)
+5. [Add **Data** to our policy](/04_create_data_block_rego.md)
+6. [Unit testing for our policies](/05_unit_testing_rego.md)
 
 ## Wrap up and conclusion
 
@@ -57,8 +63,7 @@ This is the of end of our workshop, thanks for spending the time learning with u
 | [Aiven Docs](https://docs.aiven.io/)  | The Aiven docs will help you get unblocked using any Aiven resources |
 | [Terraform Docs](https://developer.hashicorp.com/terraform/docs)  | The Terraform docs are a great reference to get started with Terraform  |
 
-
-
+If you have any question, please check out the [FAQ page](FAQ.md) or [raise an issue](https://github.com/dewan-ahmed/terraform-policy-tutorial/issues). 
 
 
 
