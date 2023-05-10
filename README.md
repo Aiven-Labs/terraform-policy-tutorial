@@ -28,11 +28,11 @@ As an added bonus Rapu will learn how to write Unit tests for his policies, whic
 
 Here's a high-level overview of the system:
 
-![High-level overview](./Terraform_OPA%20Workshop_Overview.png)
+![High-level overview](/assets/Terraform_OPA%20Workshop_Overview.png)
 
 Here's a detailed version of the same system:
 
-![Detailed view](Terraform_OPA%20Workshop_Detailed.png)
+![Detailed view](/assets/Terraform_OPA%20Workshop_Detailed.png)
 
 ## Workshop modules
 
