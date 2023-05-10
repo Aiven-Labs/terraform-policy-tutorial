@@ -1,5 +1,13 @@
 
 *.hcl
-*.md
 .terraform/providers/registry.terraform.io/aiven/aiven/4.1.3/darwin_arm64/LICENSE
 *.3
+policy/test_terraform.rego
+policy/terraform.rego
+policy/data.json
+provider.tf
+service.tf
+terraform.tfvars
+*.binary
+tfplan.json
+variables.tf
