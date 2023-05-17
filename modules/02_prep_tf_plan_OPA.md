@@ -46,7 +46,7 @@ Here is a sample output of `tfplan.json`:
                     "schema_version": 0,
                     "values": {
                         "additional_disk_space": null,
-                        "cloud_name": "aws-us-east1",
+                        "cloud_name": "google-northamerica-northeast1",
                         "disk_space": null,
                         "maintenance_window_dow": null,
                         "maintenance_window_time": null,
@@ -87,7 +87,7 @@ Here is a sample output of `tfplan.json`:
                 "before": null,
                 "after": {
                     "additional_disk_space": null,
-                    "cloud_name": "aws-us-east1",
+                    "cloud_name": "google-northamerica-northeast1",
                     "disk_space": null,
                     "maintenance_window_dow": null,
                     "maintenance_window_time": null,
@@ -159,7 +159,7 @@ Here is a sample output of `tfplan.json`:
                     "provider_config_key": "aiven",
                     "expressions": {
                         "cloud_name": {
-                            "constant_value": "aws-us-east1"
+                            "constant_value": "google-northamerica-northeast1"
                         },
                         "plan": {
                             "constant_value": "hobbyist"

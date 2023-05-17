@@ -4,7 +4,7 @@ Now that we have a few policies in place, we are going to add unit tests to ensu
 
 Create a rego file for our tests. 
 
-policy/test_terraform.rego
+file `policy/test_terraform.rego`:
 
 ```rego
 package terraform.test_analysis

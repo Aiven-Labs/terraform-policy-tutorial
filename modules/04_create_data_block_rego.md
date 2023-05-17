@@ -4,22 +4,24 @@ Rapu has done a great job implimenting his first policy. However, typically data
 
 Create the following data.json file in the `policy` folder this should be right next to our rego file: 
 
+Filename `data.json`:
+
 ```json
 {
-  "team": "devrel",
-  "app": "crab_cage",
-  "dev": {
-    "cloud": "google-northamerica-northeast1"
-  },
-  "prod": {
-    "cloud": "aws-us-east"
-  }
+    "team": "devrel",
+    "app": "crab_cast",
+    "dev": {
+        "cloud": "aws-us-east1"
+    },
+    "prod": {
+        "cloud": "google-northamerica-northeast1"
+    }
 }
 ```
 
 Now that we have a data file, we can go back and update our Rego policy.
 
-terraform.rego
+file name `terraform.rego`:
 
 ```rego
 package terraform.analysis
@@ -38,7 +40,7 @@ default allow_prod_deployment := false
 allow_dev_deployment if {
 	some resource in tfplan.planned_values.root_module.resources
 	resource.type in resource_types
-	resource.values.cloud_name == data.dev.cloud # referencing the new data block
+	startswith(resource.values.cloud_name, data.dev.cloud)  # referencing the new data block
 }
 
 allow_prod_deployment if {

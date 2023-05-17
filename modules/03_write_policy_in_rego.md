@@ -4,7 +4,9 @@ OPA policies are written in [Rego](https://www.openpolicyagent.org/docs/latest/p
 
 In the same folder, create a sub-folder called **policy** and create a file within called **terraform.rego**. Add the following code to that file:
 
-```
+`terraform.rego` file:
+
+```rego
 package terraform.analysis
 
 import input as tfplan
@@ -23,7 +25,7 @@ default allow_prod_deployment := false
 allow_dev_deployment if {
 	some resource in tfplan.planned_values.root_module.resources
 	resource.type in resource_types
-	resource.values.cloud_name == dev_env_cloud_prefix
+	startswith(resource.values.cloud_name, data.dev.cloud)  # referencing the new data block
 }
 
 allow_prod_deployment if {
@@ -37,7 +39,7 @@ Let's analyze this file. Crab Inc. uses PostgreSQL for their relational database
 
 Execute the following command from the main directory to find out if OPA would allow the Terraform deployment to go through:
 
-```
+```shell
 ./opa exec --decision terraform/analysis/allow_prod_deployment --bundle policy/ tfplan.json
 ```
 
@@ -48,7 +50,7 @@ With the current Terraform service definition, the output of the above command w
   "result": [
     {
       "path": "tfplan.json",
-      "result": true
+      "result": false
     }
   ]
 }
@@ -56,13 +58,13 @@ With the current Terraform service definition, the output of the above command w
 
 If you have [jq](https://stedolan.github.io/jq) installed on your machine, you can find the exact result with:
 
-```
+```shell
 ./opa exec --decision terraform/analysis/allow_prod_deployment --bundle policy/ tfplan.json | jq '.result[0].result'
 ```
 
 The `opa exac` command is taking in the `tfplan.json` as an input and validating this against the policy we defined in the **allow_prod_deployment** section under policy/terraform.rego file. **terraform/analysis** is denoting the package name in that Rego. 
 
-Let's make a change in the `services.tf` file and change the `cloud_name` field to `google-northamerica-northeast1`. Now if you repeat steps 2, 3, and 4, the output from the `opa exec` command should be `false`.
+Let's make a change in the `services.tf` file and change the `cloud_name` field to `aws-us-east1`. Now if you repeat steps 2, 3, and 4, the output from the `opa exec` command should be `true`.
 
 hint:
 
