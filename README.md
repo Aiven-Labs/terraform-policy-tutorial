@@ -8,6 +8,11 @@ Rapu started at Crab Inc. as Junior DevOps Engineer. He is shadowing a senior en
 
 The development team is based in Montreal, Canada and they should only create cloud resources on Google Cloud Montreal region. However, to ensure high availability for the company's North American customers, the production environment supports multiple AWS cloud regions in the US East location. Previously, there was no guardrails in place and Rapu deployed to cloud regions where he wasn't supposed to deploy. 
 
+These are the specific regions for Prod and Dev.
+
+- Prod: "google-northamerica-northeast1"
+- Dev: "aws-us-east1"
+
 Your goal is to help Rapu enforce these policies so that resources don't get created in the wrong cloud or region.
 
 ## Prerequisites
