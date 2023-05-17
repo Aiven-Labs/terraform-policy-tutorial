@@ -11,10 +11,10 @@ Filename `data.json`:
     "team": "devrel",
     "app": "crab_cast",
     "dev": {
-        "cloud": "aws-us-east1"
+        "cloud": "google-northamerica-northeast1"
     },
     "prod": {
-        "cloud": "google-northamerica-northeast1"
+        "cloud": "aws-us-east1"
     }
 }
 ```
