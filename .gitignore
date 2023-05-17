@@ -11,3 +11,4 @@ terraform.tfvars
 *.binary
 tfplan.json
 variables.tf
+.DS_Store
