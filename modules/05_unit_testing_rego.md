@@ -68,6 +68,6 @@ test_project_name {
 
 test_service_name {
     # insert code here
-	# policy to test to check that Aiven service name must contain app name (from `data.json`)
+	# policy to test that Aiven service name must contain app name (from `data.json`)
 }
 ```
