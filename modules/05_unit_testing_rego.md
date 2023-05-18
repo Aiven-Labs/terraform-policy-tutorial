@@ -60,10 +60,14 @@ opa test policy
 
 ## Challenge add unit tests for the additional policy rules you created
 
+```rego
 test_project_name {
     # insert code here
+	# policy to test that Aiven project name must contain team name (from `data.json`)
 }
 
 test_service_name {
     # insert code here
+	# policy to test to check that Aiven service name must contain app name (from `data.json`)
 }
+```
