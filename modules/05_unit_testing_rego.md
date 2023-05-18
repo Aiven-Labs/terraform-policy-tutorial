@@ -20,7 +20,7 @@ test_allow_dev_deployment {
 		"provider_name": "registry.terraform.io/aiven/aiven",
 		"schema_version": 1,
 		"values": {
-			"cloud_name": "aws-us-east",
+			"cloud_name": "google-northamerica-northeast1",
 			"plan": "hobbyist",
 			"project": "devrel-dewan",
 			"service_name": "redis-demo",
@@ -38,7 +38,7 @@ test_not_allow_prod_deployment {
 		"provider_name": "registry.terraform.io/aiven/aiven",
 		"schema_version": 1,
 		"values": {
-			"cloud_name": "aws-us-east",
+			"cloud_name": "google-northamerica-northeast1",
 			"plan": "hobbyist",
 			"project": "devrel-dewan",
 			"service_name": "redis-demo",

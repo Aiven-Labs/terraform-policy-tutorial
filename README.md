@@ -10,8 +10,8 @@ The development team is based in Montreal, Canada and they should only create cl
 
 These are the specific regions for Prod and Dev.
 
-- Prod: "google-northamerica-northeast1"
-- Dev: "aws-us-east1"
+- Prod: "aws-us-east1"
+- Dev: "google-northamerica-northeast1"
 
 Your goal is to help Rapu enforce these policies so that resources don't get created in the wrong cloud or region.
 
