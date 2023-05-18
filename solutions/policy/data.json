@@ -1,0 +1,10 @@
+{
+    "team": "devrel",
+    "app": "crab_cast",
+    "dev": {
+        "cloud": "google-northamerica-northeast1"
+    },
+    "prod": {
+        "cloud": "aws-us-east1"
+    }
+}
