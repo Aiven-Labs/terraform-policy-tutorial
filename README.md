@@ -70,7 +70,7 @@ This is the of end of our workshop, thanks for spending the time learning with u
 | [Aiven Docs](https://docs.aiven.io/)  | The Aiven docs will help you get unblocked using any Aiven resources |
 | [Terraform Docs](https://developer.hashicorp.com/terraform/docs)  | The Terraform docs are a great reference to get started with Terraform  |
 
-If you have any question, please check out the [FAQ page](FAQ.md) or [raise an issue](https://github.com/dewan-ahmed/terraform-policy-tutorial/issues). 
+If you have any question, please check out the [FAQ page](FAQ.md), ask on [Aiven community forum](https://aiven.io/community), or [raise an issue](https://github.com/dewan-ahmed/terraform-policy-tutorial/issues). 
 
 
 
