@@ -61,7 +61,7 @@ opa exec --decision terraform/analysis/allow_prod_deployment --bundle ./policy t
 
 ## Challenge: Add some rules on your own
 
-Now that you have 1 policy in place, cany you expand this policy to include a few more rules? You can try the following or make up a rule of your own.
+Now that you have 1 policy in place, can you expand this policy to include a few more rules? You can try the following or make up a rule of your own.
 
 1. project must start with team name
 2. service_name must include app name
