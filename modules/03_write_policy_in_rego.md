@@ -25,7 +25,7 @@ default allow_prod_deployment := false
 allow_dev_deployment if {
 	some resource in tfplan.planned_values.root_module.resources
 	resource.type in resource_types
-	startswith(resource.values.cloud_name, data.dev.cloud)  # referencing the new data block
+	startswith(resource.values.cloud_name, dev_env_cloud_prefix)
 }
 
 allow_prod_deployment if {
