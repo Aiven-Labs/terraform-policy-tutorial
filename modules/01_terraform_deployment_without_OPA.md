@@ -37,7 +37,7 @@ variable "project_name" {
 
 ```terraform
 resource "aiven_redis" "redis-demo" {
-    project = var.project_name # Find your Aiven project name from top-left of Aiven console
+    project = var.project_name # The project name is passed from the variable declaration
     plan = "hobbyist" # For this exercise, the hobbyist plan will do
     service_name = "redis-demo" # Choose any service name
     cloud_name = "google-northamerica-northeast1" # Choose any cloud region from https://docs.aiven.io/docs/platform/reference/list_of_clouds
