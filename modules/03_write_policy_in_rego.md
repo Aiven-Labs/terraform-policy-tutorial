@@ -62,7 +62,7 @@ If you have [jq](https://stedolan.github.io/jq) installed on your machine, you c
 ./opa exec --decision terraform/analysis/allow_prod_deployment --bundle policy/ tfplan.json | jq '.result[0].result'
 ```
 
-The `opa exac` command is taking in the `tfplan.json` as an input and validating this against the policy we defined in the **allow_prod_deployment** section under policy/terraform.rego file. **terraform/analysis** is denoting the package name in that Rego. 
+The `opa exec` command is taking in the `tfplan.json` as an input and validating this against the policy we defined in the **allow_prod_deployment** section under policy/terraform.rego file. **terraform/analysis** is denoting the package name in that Rego. 
 
 Let's make a change in the `services.tf` file and change the `cloud_name` field to `aws-us-east1`. Now if you repeat steps 2, 3, and 4, the output from the `opa exec` command should be `true`.
 
