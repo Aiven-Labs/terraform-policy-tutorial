@@ -17,7 +17,7 @@ Your goal is to help Rapu enforce these policies so that resources don't get cre
 
 ## Prerequisites
 
-The concept of the tutorial is agnostic of what Terraform provider you choose. For the sake of a demo, I'll choose [Aiven Terraform Provider](https://registry.terraform.io/providers/aiven/aiven/latest). [Aiven](https://aiven.io/) provides highly-available and scalable data infrastructure based on open-source technologies. For this tutorial, you'll create a [free Aiven account](https://console.aiven.io/signup) and [an Aiven authentication token](https://docs.aiven.io/docs/platform/howto/create_authentication_token).
+The concept of the tutorial is agnostic of what Terraform provider you choose. For the sake of a demo, I'll choose [Aiven Terraform Provider](https://registry.terraform.io/providers/aiven/aiven/latest). [Aiven](https://aiven.io/) provides highly-available and scalable data infrastructure based on open-source technologies. For this tutorial, you'll create a [free Aiven account](https://go.aiven.io/dewan-chicago) and [an Aiven authentication token](https://docs.aiven.io/docs/platform/howto/create_authentication_token).
 
 Install [OPA](https://www.openpolicyagent.org/docs/latest/#running-opa) and [Terraform](https://developer.hashicorp.com/terraform/downloads).
 
